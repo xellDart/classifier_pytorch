@@ -1,14 +1,13 @@
-from torchvision import datasets, transforms
+from torchvision import transforms
 import os
 import time
 from torch.utils import data
 import numpy as np
 from PIL import Image
-import copy
 
 
-class DogCat(data.Dataset):
-    def __init__(self, root, trans=None, train=True, test=False):
+class Dataset(data.Dataset):
+    def __init__(self, root, input_size = 224, trans=None, train=True, test=False):
         self.test = test
         self.train = train
         imgs = [os.path.join(root, img) for img in os.listdir(root)]
@@ -28,7 +27,6 @@ class DogCat(data.Dataset):
 
         # split dataset
         self.imgs = imgs
-        input_size = 224
 
         normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                          std=[0.229, 0.224, 0.225])

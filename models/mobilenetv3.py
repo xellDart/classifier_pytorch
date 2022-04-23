@@ -132,7 +132,7 @@ class MobileNetV3(nn.Module):
 
 if __name__=="__main__":
     model =MobileNetV3('mobilenet_v3_small')
-    print(model)
+
 
     input = torch.randn(1, 3, 224, 224)
     out = model(input)
