@@ -21,7 +21,7 @@ ap.add_argument("-t", "--train", type=int, default=1,
                 help="choose training or valdating")
 ap.add_argument("-pre", "--pretrained", type=str, default="None",
                 help="select a pretrained model")
-ap.add_argument("-e", "--epochs", type=int, default=150,
+ap.add_argument("-e", "--epochs", type=int, default=300,
                 help="epochs of training")
 ap.add_argument("-path", "--datapath", type=str, default="./dataset/train",
                 help="path of training dataset")
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     model_path = args["pretrained"]
 
     if model_type == "ShuffleNet2":
-        model = ShuffleNetV2(num_classes, input_size, net_type)
+        model = ShuffleNetV2(num_classes=num_classes)
     elif model_type == "MobileNet2":
         model = MobileNet2(num_classes, input_size, net_type)
     elif model_type == "MobileNetV3_Large":
@@ -185,12 +185,9 @@ if __name__ == '__main__':
     lr0 = 0.0001 * batchsize  # intial lr
     lrf = 0.01  # final lr (fraction of lr0)
 
-    loss_fn = CrossEntropyLabelSmooth(1000, 0.1)
-    optimizer = t.optim.AdamW(model.parameters(), lr=lr0 / 10)
-    # optimizer = t.optim.SGD(model.parameters(),
-    #                            lr=0.5,
-    #                            momentum=0.9,
-    #                            weight_decay=4e-5)
+    loss_fn = CrossEntropyLabelSmooth(num_classes, 0.1)
+    #optimizer = t.optim.AdamW(model.parameters(), lr=lr0 / 10)
+    optimizer = t.optim.SGD(model.parameters(), lr=lr0, momentum=0.9, nesterov=True)
 
     def lf(x): return ((1 + math.cos(x * math.pi / epochs)) / 2) * \
         (1 - lrf) + lrf  # cosine
